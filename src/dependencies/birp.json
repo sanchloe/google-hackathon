@@ -1,0 +1,21 @@
+{
+    "template_type": "BIRP",
+    "sections": {
+        "Behavior": {
+            "description": "The client's behavior, presenting issues, and subjective reports during the session.",
+            "content": ""
+        },
+        "Intervention": {
+            "description": "The specific interventions or therapeutic techniques applied during the session.",
+            "content": ""
+        },
+        "Response": {
+            "description": "The client's response to the intervention and therapist observations of engagement.",
+            "content": ""
+        },
+        "Plan": {
+            "description": "The treatment plan or next steps for therapy, including follow-up sessions.",
+            "content": ""
+        }
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "template_type": "SOAP",
+    "sections": {
+        "Subjective": {
+            "description": "Client's subjective report of their feelings, concerns, or experiences.",
+            "content": ""
+        },
+        "Objective": {
+            "description": "Therapist's observations or objective findings.",
+            "content": ""
+        },
+        "Assessment": {
+            "description": "Therapist's interpretation, analysis or diagnosis of the situation.",
+            "content": ""
+        },
+        "Plan": {
+            "description": "Next steps or treatment plan.",
+            "content": ""
+        }
+    }
+}

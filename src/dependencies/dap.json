@@ -1,0 +1,17 @@
+{
+    "template_type": "DAP",
+    "sections": {
+        "Data": {
+            "description": "The client's reported information and the therapist's observations.",
+            "content": ""
+        },
+        "Assessment": {
+            "description": "The therapist's interpretation or analysis of the client's symptoms or behavior.",
+            "content": ""
+        },
+        "Plan": {
+            "description": "The treatment plan or next steps to address the client's issues.",
+            "content": ""
+        }
+    }
+}

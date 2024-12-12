@@ -1,5 +1,5 @@
 runtime: python39
-entrypoint: streamlit run app.py --server.port $PORT --server.enableCORS false
+entrypoint: streamlit run main.py --server.port $PORT --server.enableCORS false
 
 env_variables:
   STREAMLIT_SERVER_HEADLESS: true

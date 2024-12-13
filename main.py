@@ -253,7 +253,6 @@ def main_page():
                             )
 
                             # TODO: speech to text
-                            # pass transcription to llama
                             # get case notes output
 
                             #TODO : push case notes to db

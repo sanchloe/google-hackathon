@@ -263,11 +263,11 @@ def main_page():
                             print(case_notes)
                             #TODO : push case notes to db
 
-                            # TODO: get progress notes output from model
+                            # get progress notes output from model
                             progress_notes = ProgressNotes(transcript)
                             json_progress_notes = progress_notes.run_progress_notes()
 
-                            # TODO: update case notes in ui
+                            # update case notes in ui
                             content_lst = []
                             for key, value in case_notes.items():
                                 content_lst.append(value)
@@ -315,8 +315,16 @@ def main_page():
                         st.write("Thank you for your feedback!")
 
             st.markdown("-------")
+            st.markdown("##### Sentiment Analysis")
+            # TODO: add sentiment analysis from model
+            st.markdown("Emotions Detected: Neutral")
+            st.markdown("Feelings: Anxious")
+
             st.markdown("##### Suggested Resources")
             # TODO: get resources from rag and list them
+            test_resource = ['https://www.youtube.com/watch?v=gedoSfZvBgE', 'https://www.sleepfoundation.org/sleep-hygiene/healthy-sleep-tips']
+            for item in test_resource:
+                st.markdown(f"- {item}")
 
     except Exception as e:
         print(traceback.format_exc())
@@ -326,10 +334,10 @@ def dashboard_page():
     st.markdown("---")
     st.markdown(
     """
-    <iframe 
-        src="https://lookerstudio.google.com/embed/reporting/087563e7-542c-4653-9ab9-bd429200e440/page/tEnnC" 
-        width="80%" 
-        height="600" 
+    <iframe
+        src="https://lookerstudio.google.com/embed/reporting/087563e7-542c-4653-9ab9-bd429200e440/page/tEnnC"
+        width="80%"
+        height="600"
         style="border:none;">
     </iframe>
     """,

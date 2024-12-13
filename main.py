@@ -4,7 +4,8 @@ import traceback
 import streamlit as st
 
 from src import utils
-
+from src.services.case_note_generation import CaseNotesGenerator
+from src.services.progress_notes_inference import ProgressNotes
 st.set_page_config(page_title="Case Crafter",layout="wide")
 
 template_dict = {
@@ -252,21 +253,27 @@ def main_page():
                                 key=os.path.getctime,
                             )
 
+                            transcript = utils.read_transcript("./src/dependencies/sample_transcript_8mins.txt")
+                            print(transcript)
                             # TODO: speech to text
-                            # get case notes output
-
+                            user_template_option = user_template_option.lower()
+                            notes_template = utils.load_template(f"./src/dependencies/{user_template_option}")
+                            notes_generator = CaseNotesGenerator(transcript, notes_template)
+                            case_notes = notes_generator.get_notes()
+                            print(case_notes)
                             #TODO : push case notes to db
 
                             # TODO: get progress notes output from model
-                            json_progress_notes = {}
+                            progress_notes = ProgressNotes(transcript)
+                            json_progress_notes = progress_notes.run_progress_notes()
 
                             # TODO: update case notes in ui
-                            # content_lst = []
-                            # for key, value in case_notes.items():
-                            #     content_lst.append(value)
-                            # for i in range(len(content_lst)):
-                            #     st.session_state['content_text'][i] = f"{content_lst[i]}"
-                            # section_placeholder.markdown(utils.render_sections(section_lst, description_lst, st.session_state['content_text']), unsafe_allow_html=True)
+                            content_lst = []
+                            for key, value in case_notes.items():
+                                content_lst.append(value)
+                            for i in range(len(content_lst)):
+                                st.session_state['content_text'][i] = f"{content_lst[i]}"
+                            section_placeholder.markdown(utils.render_sections(section_lst, description_lst, st.session_state['content_text']), unsafe_allow_html=True)
 
                             # update progress notes
                             client_presentation = json_progress_notes['progress_notes'][0]['client_presentation']
@@ -317,7 +324,17 @@ def main_page():
 def dashboard_page():
     st.markdown("<h1 style='text-align: center;'>Dashboard</h1>", unsafe_allow_html=True)
     st.markdown("---")
-    st.write("This is the dashboard content. Add your dashboard components here.")
+    st.markdown(
+    """
+    <iframe 
+        src="https://lookerstudio.google.com/embed/reporting/087563e7-542c-4653-9ab9-bd429200e440/page/tEnnC" 
+        width="80%" 
+        height="600" 
+        style="border:none;">
+    </iframe>
+    """,
+    unsafe_allow_html=True
+    )
 
     if st.button("Back to Main"):
         st.session_state["page"] = "main"

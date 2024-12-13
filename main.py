@@ -37,7 +37,7 @@ def main_page():
         <div class="box">
             <div class="row">
                 <div class="item"><strong>Client: {client_name}</strong></div>
-                <div class="item"><strong>Date: 17 October 2024</strong></div>
+                <div class="item"><strong>Date: 15 December 2024</strong></div>
                 <div class="item"><strong>Start Time: 10:00 AM</strong></div>
             </div>
         </div>
@@ -189,7 +189,7 @@ def main_page():
                 )
                 if st.button(":thumbsup:"):
                     st.session_state['disliked'] = False
-                    st.write("Your response has been recorded.")
+                    st.write("Thank you!")
                     print("I have been liked")
 
             with col2:

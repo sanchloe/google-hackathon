@@ -1,0 +1,33 @@
+.recommendedtext{
+    display: inline-block;
+    padding: 0.2em 0.4em;
+    margin: 0.2em;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    background-color: #bacbd8;
+    font-size: 14px;
+}
+
+/* for client name */
+.box {
+    /* border: 2px solid #bacbd8; */
+    background-color: #bacbd8;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 10px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item {
+    flex-grow: 1;  /* Allow each item to grow equally */
+    text-align: center; /* Optional: center text within each item */
+}
+
+p {
+    font-size: 16px;  /* Text size inside the box */
+}

@@ -3,10 +3,6 @@ import datetime
 import uuid
 import streamlit as st
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
 def read_transcript(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         transcript = file.read()

@@ -1,11 +1,7 @@
-import json
-import os
-
 from dotenv import load_dotenv
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.pydantic_v1 import Field
-from openai import OpenAI
 from pydantic import create_model
 
 load_dotenv()

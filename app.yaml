@@ -1,9 +1,7 @@
-runtime: python39
-entrypoint: streamlit run main.py --server.port $PORT --server.enableCORS false
+runtime: python
+env: flex
+entrypoint: streamlit run main.py --server.port=$PORT
 
-env_variables:
-  STREAMLIT_SERVER_HEADLESS: true
-  STREAMLIT_SERVER_PORT: $PORT
-
-automatic_scaling:
-  min_instances: 0
+runtime_config:
+  operating_system: "ubuntu22"
+  runtime_version: "3.12"

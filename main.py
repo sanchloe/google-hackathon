@@ -6,6 +6,8 @@ import streamlit as st
 from src import utils
 from src.services.case_note_generation import CaseNotesGenerator
 from src.services.progress_notes_inference import ProgressNotes
+from src.services.speech_inference import SpeechToText
+
 st.set_page_config(page_title="Case Crafter",layout="wide")
 
 template_dict = {
@@ -252,8 +254,11 @@ def main_page():
                                 [f for f in os.listdir(".") if f.startswith("audio")],
                                 key=os.path.getctime,
                             )
+                            audio_file_path = utils.upload_to_gcs("therapy_audio", audio_file, f"audio_files/{audio_file}")
+                            speech_to_text = SpeechToText(audio_file_path)
+                            transcribe_file_path = speech_to_text.transcribe_speech()
 
-                            transcript = utils.read_transcript("./src/dependencies/sample_transcript_8mins.txt")
+                            transcript = utils.read_text_file_from_gcs(transcribe_file_path)
                             print(transcript)
                             # TODO: speech to text
                             user_template_option = user_template_option.lower()

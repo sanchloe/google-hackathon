@@ -7,6 +7,8 @@ from src import utils
 from src.services.case_note_generation import CaseNotesGenerator
 from src.services.progress_notes_inference import ProgressNotes
 from src.services.resource_recommendation import ResourceRecommender
+from src.services.speech_inference import SpeechToText
+
 st.set_page_config(page_title="Case Crafter",layout="wide")
 
 template_dict = {
@@ -16,6 +18,7 @@ template_dict = {
 }
 
 utils.load_css('./src/css_styles/style.css')
+image_path = "logo.png"
 
 session_id, therapist_id, client_id, client_name = utils.setup_session()
 if "session_id" not in st.session_state:
@@ -30,8 +33,19 @@ def main_page():
     try:
 
         user_custom_feedback= None
-        st.markdown("<h1 style='text-align: center;'>Case Crafter</h1>", unsafe_allow_html=True)
-        st.markdown("<h2 style='text-align: center;'>Your AI Therapist Ally</h2>", unsafe_allow_html=True)
+
+        # columns for layout
+        logo_col, title_col = st.columns([0.01, 6])
+
+        # Left column: Add the image
+        with logo_col:
+            st.image(image_path, width=100)
+
+        # Right column: Add the text
+        with title_col:
+            st.markdown("<h1 style='text-align: center;'>Case Crafter</h1>", unsafe_allow_html=True)
+            st.markdown("<h2 style='text-align: center;'>Your AI Therapist Ally</h2>", unsafe_allow_html=True)
+
         st.markdown("---")
 
         # name section
@@ -253,8 +267,11 @@ def main_page():
                                 [f for f in os.listdir(".") if f.startswith("audio")],
                                 key=os.path.getctime,
                             )
+                            audio_file_path = utils.upload_to_gcs("therapy_audio", audio_file, f"audio_files/{audio_file}")
+                            speech_to_text = SpeechToText(audio_file_path)
+                            transcribe_file_path = speech_to_text.transcribe_speech()
 
-                            transcript = utils.read_transcript("./src/dependencies/sample_transcript_8mins.txt")
+                            transcript = utils.read_text_file_from_gcs(transcribe_file_path)
                             print(transcript)
                             # TODO: speech to text
                             user_template_option = user_template_option.lower()
@@ -333,18 +350,31 @@ def main_page():
         print(traceback.format_exc())
 
 def dashboard_page():
-    st.markdown("<h1 style='text-align: center;'>Dashboard</h1>", unsafe_allow_html=True)
+    logo_col, title_col = st.columns([0.01, 6])
+
+    with logo_col:
+        st.image(image_path, width=100)
+
+    with title_col:
+        st.markdown("<h1 style='text-align: center;'>Dashboard</h1>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center;'>Analytics since March 2024</h1>", unsafe_allow_html=True)
     st.markdown("---")
+
     st.markdown(
-    """
-    <iframe
-        src="https://lookerstudio.google.com/embed/reporting/087563e7-542c-4653-9ab9-bd429200e440/page/tEnnC"
-        width="80%"
-        height="600"
-        style="border:none;">
-    </iframe>
-    """,
-    unsafe_allow_html=True
+        """
+        <style>
+        iframe {
+            height: 100vh;
+            border: none;
+        }
+        </style>
+        <iframe 
+            src="https://lookerstudio.google.com/embed/reporting/087563e7-542c-4653-9ab9-bd429200e440/page/tEnnC" 
+            width="100%" 
+            height="1000">
+        </iframe>
+        """,
+        unsafe_allow_html=True
     )
 
     if st.button("Back to Main"):

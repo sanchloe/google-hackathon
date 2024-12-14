@@ -2,7 +2,7 @@ import json
 import datetime
 import uuid
 import streamlit as st
-
+from google.cloud import storage
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,10 +10,22 @@ from langchain_google_vertexai import ChatVertexAI, HarmBlockThreshold, HarmCate
 import vertexai
 vertexai.init(project="lithe-sandbox-444313-n8", location="asia-southeast1")
 
-def read_transcript(file_path):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        transcript = file.read()
-    return transcript
+from urllib.parse import urlparse
+
+
+# def read_transcript(file_path):
+#     with open(file_path, 'r', encoding='utf-8') as file:
+#         transcript = file.read()
+#     return transcript
+def read_text_file_from_gcs(gcs_uri):
+    path_parts = gcs_uri[5:].split("/", 1) 
+    bucket_name = path_parts[0]
+    blob_name = path_parts[1]
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+    content = blob.download_as_text()
+    return content
 
 def load_template(template_name):
     with open(f'{template_name}.json') as f:
@@ -83,3 +95,13 @@ def get_selected_keys_string(section_keys):
     selected_values = {key: st.session_state[key] for key in section_keys if st.session_state[key]}
     selected_keys_string = ", ".join([key for key, value in selected_values.items() if value])
     return selected_keys_string
+
+def upload_to_gcs(bucket_name, local_file_path, gcs_file_path):
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(gcs_file_path)
+
+    blob.upload_from_filename(local_file_path)
+
+    print(f"File {local_file_path} uploaded to gs://{bucket_name}/{gcs_file_path}.")
+    return f"gs://{bucket_name}/{gcs_file_path}"

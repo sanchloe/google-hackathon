@@ -6,6 +6,7 @@ import streamlit as st
 from src import utils
 from src.services.case_note_generation import CaseNotesGenerator
 from src.services.progress_notes_inference import ProgressNotes
+from src.services.resource_recommendation import ResourceRecommender
 st.set_page_config(page_title="Case Crafter",layout="wide")
 
 template_dict = {
@@ -322,8 +323,10 @@ def main_page():
 
             st.markdown("##### Suggested Resources")
             # TODO: get resources from rag and list them
-            test_resource = ['https://www.youtube.com/watch?v=gedoSfZvBgE', 'https://www.sleepfoundation.org/sleep-hygiene/healthy-sleep-tips']
-            for item in test_resource:
+            recommender = ResourceRecommender(transcript)
+            resource_links = recommender.get_recommendations()
+            # test_resource = ['https://www.youtube.com/watch?v=gedoSfZvBgE', 'https://www.sleepfoundation.org/sleep-hygiene/healthy-sleep-tips']
+            for item in resource_links:
                 st.markdown(f"- {item}")
 
     except Exception as e:

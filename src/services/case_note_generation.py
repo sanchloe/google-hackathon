@@ -1,11 +1,7 @@
-import json
-import os
-
 from dotenv import load_dotenv
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.pydantic_v1 import Field
-from openai import OpenAI
 from pydantic import create_model
 
 load_dotenv()
@@ -23,19 +19,19 @@ class CaseNotesGenerator:
 
     def create_dynamic_model(self):
         fields = {
-            section: (str, Field(description=data['description'])) 
+            section: (str, Field(description=data['description']))
             for section, data in self.template['sections'].items()
         }
 
         CaseNotesModel = create_model(
-            self.template['template_type'],  
+            self.template['template_type'],
             **fields
         )
         return CaseNotesModel
 
     def get_system_prompt(self):
         system_prompt = """You are an assistant for a mental health company. Your task is to review the audio transcription of a therapy session and generate case notes in first-person perspective, as if the therapist is personally writing them. Follow the specific template selected by the therapist for the session. Ensure the language used is professional, clear, and concise. Only include information explicitly mentioned in the audio, using direct quotes where appropriate to enhance accuracy. Avoid adding interpretations or assumptions beyond what was discussed in the session. Respond only with valid JSON. Do not write an introduction or summary.
-        Here is a sample output for the SOAP template: 
+        Here is a sample output for the SOAP template:
         {{
             "Subjective": generated notes here,
             "Objective": generated notes here,
@@ -69,11 +65,11 @@ class CaseNotesGenerator:
             pydantic_object=self.create_dynamic_model())
         format_instructions = case_notes_parser.get_format_instructions()
 
-        prompt = ChatPromptTemplate([("system", self.get_system_prompt()), 
+        prompt = ChatPromptTemplate([("system", self.get_system_prompt()),
                                      ("human", self.create_user_prompt())])
         chain = prompt | model | case_notes_parser
         input_dict = {
-            "transcript": self.transcript, 
+            "transcript": self.transcript,
             "format_instructions": format_instructions
             }
         response = chain.invoke(input_dict)

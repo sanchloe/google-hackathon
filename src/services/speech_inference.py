@@ -6,8 +6,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from utils import upload_to_gcs
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
 
-client = speech.SpeechClient.from_service_account_file('src/lithe-sandbox-444313-n8-1159cbcccf0d.json')
+GOOGLE_API_KEY = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+client = speech.SpeechClient.from_service_account_file(GOOGLE_API_KEY)
 
 class SpeechToText:
     def __init__(self, file_path):

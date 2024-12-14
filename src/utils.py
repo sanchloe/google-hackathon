@@ -3,6 +3,13 @@ import datetime
 import uuid
 import streamlit as st
 
+from dotenv import load_dotenv
+
+load_dotenv()
+from langchain_google_vertexai import ChatVertexAI, HarmBlockThreshold, HarmCategory
+import vertexai
+vertexai.init(project="lithe-sandbox-444313-n8", location="asia-southeast1")
+
 def read_transcript(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         transcript = file.read()
@@ -11,6 +18,16 @@ def read_transcript(file_path):
 def load_template(template_name):
     with open(f'{template_name}.json') as f:
         return json.load(f)
+    
+def load_model():
+    model = ChatVertexAI(
+        model_name="gemini-1.5-pro",
+        convert_system_message_to_human=True,
+        safety_settings={
+            HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE
+        },
+    )
+    return model
 
 def load_css(file_name):
     with open(file_name) as f:

@@ -9,6 +9,7 @@ from src.services.progress_notes_inference import ProgressNotes
 from src.services.resource_recommendation import ResourceRecommender
 from src.services.speech_inference import SpeechToText
 from src.services.db_handler import BigQueryConnector
+from src.services.sentiment_anaylsis import SentimentAnalysis
 
 st.set_page_config(page_title="Case Crafter",layout="wide")
 
@@ -308,8 +309,6 @@ def main_page():
                             client_status_db = ', '.join([item.lower() for item in client_status])
                             risk_assessment_db = ', '.join([item.lower() for item in risk_assessment])
 
-                            db_connector.insert_progress_notes(session_id, therapist_id, client_name, client_id, client_presentation_db, response_to_treatment_db, client_status_db, risk_assessment_db)
-
                             client_presentation_html = '<p>Recommended: ' + ' '.join([f'<span class="recommendedtext">{item}</span>' for item in client_presentation]) + '</p>'
                             response_to_treatment_html = '<p>Recommended: ' + ' '.join([f'<span class="recommendedtext">{item}</span>' for item in response_to_treatment]) + '</p>'
                             client_status_html = '<p>Recommended: ' + ' '.join([f'<span class="recommendedtext">{item}</span>' for item in client_status]) + '</p>'
@@ -340,8 +339,10 @@ def main_page():
             st.markdown("-------")
             st.markdown("##### Sentiment Analysis")
             # TODO: add sentiment analysis from model
-            st.markdown("Emotions Detected: Neutral")
-            st.markdown("Feelings: Anxious")
+            sentiment_class = SentimentAnalysis(transcript)
+            sentiment = sentiment_class.run_sentiment()
+            st.markdown(f"Sentiment Emotion Detected: {sentiment}")
+            db_connector.insert_progress_notes(session_id, therapist_id, client_name, client_id, client_presentation_db, response_to_treatment_db, client_status_db, risk_assessment_db, sentiment)
 
             st.markdown("##### Suggested Resources")
             # TODO: get resources from rag and list them

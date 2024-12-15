@@ -39,8 +39,8 @@ class BigQueryConnector:
     def insert_progress_notes(
             self, session_id, client_id, client_name, therapist_id,
             client_presentation, response_treatment, client_status,
-            risk_assessment):
-        table_name = "progress-notes"
+            risk_assessment, sentiment):
+        table_name = "patient-progress-notes"
         table_id = f"{self.project_id}.{self.dataset_name}.{table_name}"
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         rows_to_insert = [
@@ -53,6 +53,7 @@ class BigQueryConnector:
                 "response_treatment": response_treatment,
                 "client_status": client_status,
                 "risk_assessment": risk_assessment,
+                "sentiment": sentiment,
                 "submitted_at": timestamp,
             }
         ]

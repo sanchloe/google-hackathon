@@ -17,7 +17,6 @@ with open(GOOGLE_API_KEY) as source:
 vertex_credentials = service_account.Credentials.from_service_account_info(info)
 vertexai.init(project="lithe-sandbox-444313-n8", location="asia-southeast1")
 
-#Sentiment Class
 class SentimentAnalysis:
     def __init__(self, transcript):
         self.transcript = transcript

@@ -121,7 +121,3 @@ class BigQueryConnector:
 
         for table_name, schema in schemas.items():
             self.create_table_if_not_exists(table_name, schema)
-
-
-            for table_name, schema in schemas.items():
-                self.create_table_if_not_exists(table_name, schema)

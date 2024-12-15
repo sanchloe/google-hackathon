@@ -1,7 +1,8 @@
-from google.cloud import aiplatform
-from dotenv import load_dotenv
-from datetime import datetime
 import os
+from datetime import datetime
+
+from dotenv import load_dotenv
+from google.cloud import aiplatform
 
 load_dotenv()
 

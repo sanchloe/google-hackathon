@@ -1,12 +1,16 @@
-from google.cloud import speech
-from google.protobuf import wrappers_pb2 
-import sys
 import os
+import sys
+
+from google.cloud import speech
+from google.protobuf import wrappers_pb2
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from utils import upload_to_gcs
 from datetime import datetime
+
 from dotenv import load_dotenv
+from utils import upload_to_gcs
+
 load_dotenv()
 
 GOOGLE_API_KEY = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")

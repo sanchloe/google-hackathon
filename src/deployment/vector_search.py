@@ -1,20 +1,22 @@
-import os
 import json
+import os
+
 from dotenv import load_dotenv
-from google.cloud import storage, aiplatform
+from google.cloud import aiplatform, storage
 from langchain_community.document_loaders import PyPDFLoader
+from langchain_google_vertexai import (VectorSearchVectorStore,
+                                       VertexAIEmbeddings)
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_google_vertexai import VectorSearchVectorStore, VertexAIEmbeddings
 
 load_dotenv()
-
-aiplatform.init(project="lithe-sandbox-444313-n8", location="asia-southeast1")
 
 BUCKET_NAME = os.getenv("BUCKET_NAME")
 PROJECT_ID = os.getenv("PROJECT_ID")
 REGION = os.getenv("REGION")
 INDEX_ID = os.getenv("INDEX_ID")
 ENDPOINT_ID = os.getenv("ENDPOINT_ID")
+
+aiplatform.init(project=PROJECT_ID, location=REGION)
 
 RESOURCES_LINKS_PATH = "../dependencies/resource_links.json"
 DOCUMENT_FOLDER = "resource-library"  
@@ -108,8 +110,8 @@ class VectorSearch:
 
     def __init__(self, index_id, endpoint_id, embedding_model):
         self.vector_store = VectorSearchVectorStore.from_components(
-            project_id=os.getenv("PROJECT_ID"),
-            region=os.getenv("REGION"),
+            project_id=PROJECT_ID,
+            region=REGION,
             gcs_bucket_name=BUCKET_NAME,
             index_id=index_id,
             endpoint_id=endpoint_id,

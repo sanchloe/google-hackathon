@@ -1,10 +1,12 @@
+import os
+
 from dotenv import load_dotenv
 from langchain.prompts import ChatPromptTemplate
-from langchain_google_vertexai import ChatVertexAI, HarmBlockThreshold, HarmCategory
-from langchain_google_vertexai import VertexAIEmbeddings
-from .retriever import Retriever
+from langchain_google_vertexai import (ChatVertexAI, HarmBlockThreshold,
+                                       HarmCategory, VertexAIEmbeddings)
+
 from ..deployment.vector_search import VectorSearch
-import os
+from .retriever import Retriever
 
 load_dotenv()
 

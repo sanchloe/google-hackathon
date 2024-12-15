@@ -1,14 +1,20 @@
+import os
+
 from dotenv import load_dotenv
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-from pydantic import create_model, Field
+from pydantic import Field, create_model
 
 load_dotenv()
 
 import vertexai
-from langchain_google_vertexai import ChatVertexAI, HarmBlockThreshold, HarmCategory
+from langchain_google_vertexai import (ChatVertexAI, HarmBlockThreshold,
+                                       HarmCategory)
 
-vertexai.init(project="lithe-sandbox-444313-n8", location="asia-southeast1")
+PROJECT_ID = os.getenv("PROJECT_ID")
+REGION = os.getenv("REGION")
+
+vertexai.init(project=PROJECT_ID, location=REGION)
 
 class CaseNotesGenerator:
 

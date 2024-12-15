@@ -1,9 +1,8 @@
 from typing import List
 
 from langchain_core.messages import AIMessage
-from langchain_core.prompts import ChatPromptTemplate
-from pydantic import BaseModel, Field
 from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 from src.utils import load_model
 

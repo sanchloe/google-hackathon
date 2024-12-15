@@ -34,6 +34,15 @@ else:
 if "page" not in st.session_state:
     st.session_state["page"] = "main"
 
+if 'transcript' not in st.session_state:
+    st.session_state['transcript'] = None
+
+if 'sentiment' not in st.session_state:
+    st.session_state['sentiment'] = None
+
+if 'resource_links' not in st.session_state:
+    st.session_state['resource_links'] = None
+
 def main_page():
     try:
 
@@ -277,6 +286,7 @@ def main_page():
                             transcribe_file_path = speech_to_text.transcribe_speech()
 
                             transcript = utils.read_text_file_from_gcs(transcribe_file_path)
+                            st.session_state['transcript'] = transcript
                             print(transcript)
                             # TODO: speech to text
                             user_template_option = user_template_option.lower()
@@ -334,23 +344,32 @@ def main_page():
                         response_treatment_final = utils.get_selected_keys_string(section2_keys)
                         client_status_final = utils.get_selected_keys_string(section3_keys)
                         risk_assesment_final = utils.get_selected_keys_string(section4_keys)
-                        db_connector.insert_progress_notes(session_id, therapist_id, client_name, client_id, client_presentation_final, response_treatment_final, client_status_final, risk_assesment_final, "")
+                        db_connector.insert_progress_notes(session_id, therapist_id, client_name, client_id, client_presentation_final, response_treatment_final, client_status_final, risk_assesment_final, st.session_state['sentiment'])
                         st.write("Thank you for your feedback!")
 
             st.markdown("-------")
             st.markdown("##### Sentiment Analysis")
-            # TODO: add sentiment analysis from model
-            sentiment_class = SentimentAnalysis(transcript)
-            sentiment = sentiment_class.run_sentiment()
-            st.markdown(f"Sentiment Emotion Detected: {sentiment}")
-            db_connector.insert_progress_notes(session_id, therapist_id, client_name, client_id, client_presentation_db, response_to_treatment_db, client_status_db, risk_assessment_db, sentiment)
+            if st.session_state["transcript"] != None:
+                if st.session_state["sentiment"] != None:
+                    st.markdown(f"Sentiment Emotion Detected: {st.session_state['sentiment']}") 
+                else:
+                    sentiment_class = SentimentAnalysis(transcript)
+                    sentiment = sentiment_class.run_sentiment()
+                    st.session_state['sentiment'] = sentiment
+                    st.markdown(f"Sentiment Emotion Detected: {sentiment}")
+                    db_connector.insert_progress_notes(session_id, therapist_id, client_name, client_id, client_presentation_db, response_to_treatment_db, client_status_db, risk_assessment_db, sentiment)
 
             st.markdown("##### Suggested Resources")
-            recommender = ResourceRecommender(transcript)
-            resource_links = recommender.get_recommendations()
-            # test_resource = ['https://www.youtube.com/watch?v=gedoSfZvBgE', 'https://www.sleepfoundation.org/sleep-hygiene/healthy-sleep-tips']
-            for item in resource_links:
-                st.markdown(f"- {item}")
+            if st.session_state["transcript"] != None:
+                if st.session_state['resource_links'] != None:
+                    for item in st.session_state['resource_links']:
+                        st.markdown(f"- {item}")
+                else:
+                    recommender = ResourceRecommender(transcript)
+                    resource_links = recommender.get_recommendations()
+                    st.session_state['resource_links'] = resource_links
+                    for item in resource_links:
+                        st.markdown(f"- {item}")
 
     except Exception as e:
         print(traceback.format_exc())

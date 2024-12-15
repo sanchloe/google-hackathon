@@ -1,21 +1,24 @@
 
-import vertexai
-from vertexai.generative_models import GenerativeModel, Part
-import vertexai.preview.generative_models as generative_models
-
-from dotenv import dotenv_values
 import json
-from google.oauth2 import service_account
 import os
-from dotenv import load_dotenv
+
+import vertexai
+import vertexai.preview.generative_models as generative_models
+from dotenv import dotenv_values, load_dotenv
+from google.oauth2 import service_account
+from vertexai.generative_models import GenerativeModel, Part
+
 load_dotenv()
 
 GOOGLE_API_KEY = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+PROJECT_ID = os.getenv("PROJECT_ID")
+REGION = os.getenv("REGION")
+
 with open(GOOGLE_API_KEY) as source:
     info = json.load(source)
 
 vertex_credentials = service_account.Credentials.from_service_account_info(info)
-vertexai.init(project="lithe-sandbox-444313-n8", location="asia-southeast1")
+vertexai.init(project=PROJECT_ID, location=REGION)
 
 class SentimentAnalysis:
     def __init__(self, transcript):

@@ -1,15 +1,16 @@
-import os
 import json
+import os
 import traceback
+
 import streamlit as st
 
 from src import utils
 from src.services.case_note_generation import CaseNotesGenerator
+from src.services.db_handler import BigQueryConnector
 from src.services.progress_notes_inference import ProgressNotes
 from src.services.resource_recommendation import ResourceRecommender
-from src.services.speech_inference import SpeechToText
-from src.services.db_handler import BigQueryConnector
 from src.services.sentiment_anaylsis import SentimentAnalysis
+from src.services.speech_inference import SpeechToText
 
 st.set_page_config(page_title="Case Crafter",layout="wide")
 
@@ -333,7 +334,7 @@ def main_page():
                         response_treatment_final = utils.get_selected_keys_string(section2_keys)
                         client_status_final = utils.get_selected_keys_string(section3_keys)
                         risk_assesment_final = utils.get_selected_keys_string(section4_keys)
-                        db_connector.insert_progress_notes(session_id, therapist_id, client_name, client_id, client_presentation_final, response_treatment_final, client_status_final, risk_assesment_final)
+                        db_connector.insert_progress_notes(session_id, therapist_id, client_name, client_id, client_presentation_final, response_treatment_final, client_status_final, risk_assesment_final, "")
                         st.write("Thank you for your feedback!")
 
             st.markdown("-------")
@@ -345,7 +346,6 @@ def main_page():
             db_connector.insert_progress_notes(session_id, therapist_id, client_name, client_id, client_presentation_db, response_to_treatment_db, client_status_db, risk_assessment_db, sentiment)
 
             st.markdown("##### Suggested Resources")
-            # TODO: get resources from rag and list them
             recommender = ResourceRecommender(transcript)
             resource_links = recommender.get_recommendations()
             # test_resource = ['https://www.youtube.com/watch?v=gedoSfZvBgE', 'https://www.sleepfoundation.org/sleep-hygiene/healthy-sleep-tips']

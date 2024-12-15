@@ -8,6 +8,7 @@ from src.services.case_note_generation import CaseNotesGenerator
 from src.services.progress_notes_inference import ProgressNotes
 from src.services.resource_recommendation import ResourceRecommender
 from src.services.speech_inference import SpeechToText
+from src.services.db_handler import BigQueryConnector
 
 st.set_page_config(page_title="Case Crafter",layout="wide")
 
@@ -19,6 +20,8 @@ template_dict = {
 
 utils.load_css('./src/css_styles/style.css')
 image_path = "logo.png"
+
+db_connector = BigQueryConnector()
 
 session_id, therapist_id, client_id, client_name = utils.setup_session()
 if "session_id" not in st.session_state:
@@ -279,7 +282,8 @@ def main_page():
                             notes_generator = CaseNotesGenerator(transcript, notes_template)
                             case_notes = notes_generator.get_notes()
                             print(case_notes)
-                            #TODO : push case notes to db
+
+                            db_connector.insert_case_notes(session_id, client_id, client_name, therapist_id, str(case_notes))
 
                             # get progress notes output from model
                             progress_notes = ProgressNotes(transcript)
@@ -304,7 +308,7 @@ def main_page():
                             client_status_db = ', '.join([item.lower() for item in client_status])
                             risk_assessment_db = ', '.join([item.lower() for item in risk_assessment])
 
-                            # TODO: update db progress notes
+                            db_connector.insert_progress_notes(session_id, therapist_id, client_name, client_id, client_presentation_db, response_to_treatment_db, client_status_db, risk_assessment_db)
 
                             client_presentation_html = '<p>Recommended: ' + ' '.join([f'<span class="recommendedtext">{item}</span>' for item in client_presentation]) + '</p>'
                             response_to_treatment_html = '<p>Recommended: ' + ' '.join([f'<span class="recommendedtext">{item}</span>' for item in response_to_treatment]) + '</p>'
@@ -325,11 +329,12 @@ def main_page():
 
                 if user_custom_feedback:
                     if save_button:
-                        # TODO: connect to db and update feedback
+                        db_connector.insert_feedback(session_id, user_custom_feedback)
                         client_presentation_final = utils.get_selected_keys_string(section1_keys)
                         response_treatment_final = utils.get_selected_keys_string(section2_keys)
                         client_status_final = utils.get_selected_keys_string(section3_keys)
                         risk_assesment_final = utils.get_selected_keys_string(section4_keys)
+                        db_connector.insert_progress_notes(session_id, therapist_id, client_name, client_id, client_presentation_final, response_treatment_final, client_status_final, risk_assesment_final)
                         st.write("Thank you for your feedback!")
 
             st.markdown("-------")
